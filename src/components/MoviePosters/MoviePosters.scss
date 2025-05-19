@@ -1,0 +1,94 @@
+@use '../../styles/variables' as *;
+@use "../../styles/mixins" as *;
+
+$arrows-space: 25px;
+
+.movies-slider {
+	width: 100%;
+	margin: 0 auto;
+	padding: 0 $space-5;
+
+	.slick-arrow {
+		z-index: 99;
+
+		&:before {
+			opacity: 1;
+			color: $white-color;
+			font-size: $font-size-32;
+		}
+	}
+
+	.slick-prev {
+		left: $arrows-space - 10px;
+	}
+
+	.slick-next {
+		right: $arrows-space;
+	}
+
+	.slick-track {
+		display: flex !important;
+
+		.slick-slide {
+			height: inherit !important;
+			display: flex !important;
+
+			& > div {
+				width: 100%;
+				display: flex !important;
+			}
+		}
+
+		.movie-title {
+			@include font-semibold;
+			font-size: $font-size-16;
+			text-align: center;
+			margin-top: $space-2;
+			text-transform: capitalize;
+		}
+	}
+}
+
+.movie-card {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+
+	img { width: 100% }
+
+	.poster, .no-poster {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+.poster {
+	position: relative;
+
+	.heading {
+		position: absolute;
+		bottom: 0;
+		text-align: center;
+		background-color: rgba($text-color, 0.6);
+		width: 100%;
+		padding: $space-2;
+		color: $background-color;
+		text-shadow: $text-color 2px 2px 4px;
+	}
+}
+
+.no-poster {
+	background-color: $error-color;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: $space-4;
+
+	.heading {
+		text-align: center;
+		@include font-bold;
+		color: $background-color;
+		font-size: $font-size-28;
+	}
+}
