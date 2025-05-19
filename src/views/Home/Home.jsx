@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Heading from '../../components/Heading/Heading';
 import Header from '../../components/Header/Header';
+import MoviePosters from '../../components/MoviePosters/MoviePosters';
 import './Home.scss';
 
 const Home = () => {
@@ -19,7 +20,8 @@ const Home = () => {
 		<div className="home-view">
 			<Header />
 			<div className="home-content">
-				<Heading level={1}>Welcome to My React App</Heading>
+				<Heading level={1} className='heading-3 text-center'>Películas Recomendadas</Heading>
+				<MoviePosters/>
 			</div>
 		</div>
 	);
