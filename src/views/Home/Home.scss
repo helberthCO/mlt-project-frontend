@@ -1,0 +1,16 @@
+@use '../../styles/variables' as *;
+
+.home {
+	&-view {
+		height: 100vh;
+		background-color: rgba($background-color, 0.5);
+	}
+
+	&-content {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		max-width: 1200px;
+		margin: auto;
+	}
+}

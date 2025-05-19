@@ -1,0 +1,53 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.app-header {
+	background-color: $text-color;
+	padding: $space-4 $space-8;
+	box-shadow: $box-shadow-2;
+}
+
+.header-content {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 1200px;
+	margin: auto;
+
+	.header-actions {
+		display: flex;
+		gap: $space-8;
+		align-items: center;
+	}
+
+	.heading,
+	.paragraph {
+		color: $background-color;
+	}
+
+	.profile {
+		padding: $space-1 $space-3;
+		background-color: transparent;
+		@include font-semibold;
+	}
+
+	.logout-button {
+		min-width: 180px;
+		padding: $space-2 $space-3;
+		background-color: transparent;
+		color: $background-color;
+		border: 2px solid $background-color;
+		box-sizing: border-box;
+
+		&:hover {
+			background-color: $text-color;
+			color: $background-color;
+			border: 2px solid $text-color;
+		}
+	}
+
+	.welcome-section {
+		height: fit-content;
+	}
+}
