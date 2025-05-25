@@ -15,7 +15,15 @@
 
 		.heading-context {
 			margin-top: $space-2;
-			@include font-medium
+			@include font-medium;
+		}
+
+		.error {
+			text-align: center;
+			margin: $space-3 auto 0;
+			color: $error-color;
+			@include font-bold;
+			max-width: 400px;
 		}
 
 		form {

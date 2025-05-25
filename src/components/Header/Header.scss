@@ -2,9 +2,10 @@
 @use "../../styles/mixins" as *;
 
 .app-header {
-	background-color: $text-color;
+	position: fixed;
+	z-index: 1;
+	width: 100%;
 	padding: $space-4 $space-8;
-	box-shadow: $box-shadow-2;
 }
 
 .header-content {
@@ -24,12 +25,14 @@
 	.heading,
 	.paragraph {
 		color: $background-color;
+		text-shadow: 1px 1px 5px rgba($text-color, .5);
 	}
 
-	.profile {
+	.rate-movies-button {
 		padding: $space-1 $space-3;
 		background-color: transparent;
 		@include font-semibold;
+		text-shadow: 1px 1px 5px rgba($text-color, .5);
 	}
 
 	.logout-button {

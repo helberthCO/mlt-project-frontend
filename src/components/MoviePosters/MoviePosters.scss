@@ -3,92 +3,142 @@
 
 $arrows-space: 25px;
 
-.movies-slider {
-	width: 100%;
-	margin: 0 auto;
-	padding: 0 $space-5;
+.movie-posters {
+	padding: 75px 0 0;
+	position: relative;
 
-	.slick-arrow {
-		z-index: 99;
+	.movie-backdrop {
+		position: absolute;
+		top: 0;
+		width: auto;
+		height: 100%;
+		z-index: -1;
+	}
 
-		&:before {
-			opacity: 1;
+	.main-heading {
+		text-transform: uppercase;
+		padding: $space-6 0 $space-10;
+		@include font-extrabold;
+		color: $white-color;
+		text-shadow: 2px 2px 6px rgba($text-color, .8);
+	}
+
+	.movie-details {
+		display: flex;
+		flex-direction: column;
+		gap: $space-3;
+		padding: 0 $space-10;
+		margin-top: $space-6;
+		min-height: 200px;
+
+		.heading {
+			@include font-bold;
 			color: $white-color;
-			font-size: $font-size-32;
+			text-shadow: 2px 2px 8px rgba($text-color, .8);
+			font-size: $font-size-28;
+		}
+
+		.movie-overview {
+			@include font-light;
+			color: $white-color;
+			text-shadow: 1px 1px 8px rgba($text-color, .8);
+			font-size: $font-size-18;
 		}
 	}
+	.movies-slider {
+		width: 100%;
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0;
 
-	.slick-prev {
-		left: $arrows-space - 10px;
-	}
+		.slick-slider {
+			max-width: 60%;
+			margin-left: auto;
+		}
 
-	.slick-next {
-		right: $arrows-space;
-	}
+		.slick-arrow {
+			z-index: 99;
 
-	.slick-track {
-		display: flex !important;
-
-		.slick-slide {
-			height: inherit !important;
-			display: flex !important;
-
-			& > div {
-				width: 100%;
-				display: flex !important;
+			&:before {
+				opacity: 1;
+				color: $white-color;
+				font-size: $font-size-32;
 			}
 		}
 
-		.movie-title {
-			@include font-semibold;
-			font-size: $font-size-16;
-			text-align: center;
-			margin-top: $space-2;
-			text-transform: capitalize;
+		.slick-prev {
+			left: $arrows-space - 10px;
+		}
+
+		.slick-next {
+			right: $arrows-space;
+		}
+
+		.slick-track {
+			display: flex !important;
+
+			.slick-slide {
+				height: inherit !important;
+				display: flex !important;
+				padding: 0 $space-1;
+
+				& > div {
+					width: 100%;
+					display: flex !important;
+				}
+			}
+
+			.movie-title {
+				@include font-semibold;
+				font-size: $font-size-16;
+				text-align: center;
+				margin-top: $space-2;
+				text-transform: capitalize;
+			}
 		}
 	}
-}
 
-.movie-card {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-
-	img { width: 100% }
-
-	.poster, .no-poster {
+	.movie-card {
 		height: 100%;
 		display: flex;
 		flex-direction: column;
+
+		img { width: 100% }
+
+		.poster, .no-poster {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
 	}
-}
 
-.poster {
-	position: relative;
+	.poster {
+		position: relative;
 
-	.heading {
-		position: absolute;
-		bottom: 0;
-		text-align: center;
-		background-color: rgba($text-color, 0.6);
-		width: 100%;
-		padding: $space-2;
-		color: $background-color;
-		text-shadow: $text-color 2px 2px 4px;
+		.heading {
+			position: absolute;
+			bottom: 0;
+			text-align: center;
+			background-color: rgba($text-color, 0.6);
+			width: 100%;
+			padding: $space-2;
+			color: $background-color;
+			text-shadow: $text-color 2px 2px 4px;
+		}
 	}
-}
 
-.no-poster {
-	background-color: $error-color;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: $space-4;
+	.no-poster {
+		background-color: $error-color;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: $space-4;
 
-	.heading {
-		text-align: center;
-		@include font-bold;
-		color: $background-color;
-		font-size: $font-size-28;
+		.heading {
+			text-align: center;
+			@include font-bold;
+			color: $background-color;
+			font-size: $font-size-28;
+		}
 	}
 }
