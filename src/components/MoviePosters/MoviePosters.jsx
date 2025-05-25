@@ -141,7 +141,7 @@ const MoviePosters = () => {
 			<div className="movie-backdrop">
 				{currentMovie && currentMovie.backdrop_path && (
 					<img
-						src={`https://image.tmdb.org/t/p/w780${currentMovie.backdrop_path}`}
+						src={`https://image.tmdb.org/t/p/w1280${currentMovie.backdrop_path}`}
 						alt={`${currentMovie.title} backdrop`}
 						className="movie-backdrop"
 					/>
@@ -158,7 +158,7 @@ const MoviePosters = () => {
 								{movie.poster_path ? (
 									<div className="poster">
 										<img
-											src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+											src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
 											alt={movie.title}
 											className="movie-poster"
 										/>
