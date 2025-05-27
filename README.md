@@ -13,27 +13,31 @@
 
 ## Backend Installation
 
-1. Navigate to the backend directory:
+1. Download the model and place the `.pt` file on the folder `/backend/data/`:
    ```bash
    cd backend
    ```
-2. Create a virtual environment:
+2. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+3. Create a virtual environment:
    ```bash
    python -m venv venv
    ```
-3. Activate the virtual environment:
+4. Activate the virtual environment:
    ```bash
    npm run dev
    ```
-4. Install dependencies:
+5. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-5. Run the backend server:
+6. Run the backend server:
    ```bash
    uvicorn main:app --reload
     ```
 
 ## Nota:
-Los modelos no pudieron ser guardados en GitHub debido al peso de los archivos, por lo tanto, se adjunta link de acceso a carpeta pública de Google Drive:
-https://drive.google.com/drive/folders/1DMO5Tn4fSdv9NC8HWqlZcEQw5ILoflsD?usp=sharing
+#### Los modelos no pudieron ser guardados en GitHub debido al peso de los archivos, por lo tanto, se adjunta link de acceso a carpeta pública de Google Drive:
+#### - https://drive.google.com/drive/folders/1DMO5Tn4fSdv9NC8HWqlZcEQw5ILoflsD?usp=sharing
