@@ -34,4 +34,6 @@
    uvicorn main:app --reload
     ```
 
-## Backend Installation
+## Nota:
+Los modelos no pudieron ser guardados en GitHub debido al peso de los archivos, por lo tanto, se adjunta link de acceso a carpeta pública de Google Drive:
+https://drive.google.com/drive/folders/1DMO5Tn4fSdv9NC8HWqlZcEQw5ILoflsD?usp=sharing
