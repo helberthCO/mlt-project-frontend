@@ -13,7 +13,7 @@
 
 ## Backend Installation
 
-1. Download the model and place the `.pt` file on the folder `/backend/data/`: [https://drive.google.com/file/d/1dtUcz-G2OEvvKX2dzEdhOBhDwyuVoDap/view?usp=drive_link](https://drive.google.com/drive/folders/1u0UfQ3mEw4ohqxi97umXnZtRBUBJxq9F?usp=sharing
+1. Download the model and place the `.pt` file on the folder `/backend/data/`: https://drive.google.com/drive/folders/1u0UfQ3mEw4ohqxi97umXnZtRBUBJxq9F?usp=sharing
 
 este es el link de acceso a la carpeta donde esta el archivo)
 2. Navigate to the backend directory:
