@@ -13,10 +13,7 @@
 
 ## Backend Installation
 
-1. Download the model and place the `.pt` file on the folder `/backend/data/`:
-   ```bash
-   cd backend
-   ```
+1. Download the model and place the `.pt` file on the folder `/backend/data/`: https://drive.google.com/file/d/1dtUcz-G2OEvvKX2dzEdhOBhDwyuVoDap/view?usp=drive_link
 2. Navigate to the backend directory:
    ```bash
    cd backend
