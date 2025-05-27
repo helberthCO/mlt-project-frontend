@@ -15,7 +15,6 @@
 
 1. Download the model and place the `bert_gat_with_graphsage_finetuned.pt` file on the folder `/backend/data/`: https://drive.google.com/drive/folders/1u0UfQ3mEw4ohqxi97umXnZtRBUBJxq9F?usp=sharing
 
-este es el link de acceso a la carpeta donde esta el archivo)
 2. Navigate to the backend directory:
    ```bash
    cd backend
