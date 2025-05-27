@@ -5,11 +5,13 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import Paragraph from '../../components/Paragraph/Paragraph';
 import { registerUser, loginUser, auth } from '../../services/firebase.service';
+import { movielensService } from '../../services/movielensService.service';
 import { onAuthStateChanged } from 'firebase/auth';
 import './Login.scss';
 
 const Login = () => {
 	const navigate = useNavigate();
+	const [loginType, setLoginType] = useState('id');
 	const [isLogin, setIsLogin] = useState(true);
 	const [loading, setLoading] = useState(false);
 	const [formData, setFormData] = useState({
@@ -17,15 +19,34 @@ const Login = () => {
 		username: '',
 		password: ''
 	});
+	const [userId, setUserId] = useState('');
 	const [error, setError] = useState('');
+    const [maxUserId, setMaxUserId] = useState(null);
+    const [loadingMaxId, setLoadingMaxId] = useState(true);
 
 	useEffect(() => {
 		// Check if user is already authenticated
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			if (user) {
+			if (user || localStorage.getItem('movieAppUserId')) {
 				navigate('/');
 			}
 		});
+
+        // Cargar el último ID de usuario
+        const loadMaxUserId = async () => {
+            try {
+                setLoadingMaxId(true);
+                const maxId = await movielensService.getMaxUserId();
+                setMaxUserId(maxId);
+            } catch (error) {
+                console.error('Error cargando max user ID:', error);
+                setMaxUserId('Error');
+            } finally {
+                setLoadingMaxId(false);
+            }
+        };
+
+        loadMaxUserId();
 
 		// Cleanup subscription
 		return () => unsubscribe();
@@ -38,6 +59,13 @@ const Login = () => {
 			[name]: value
 		});
 	};
+
+	const handleIdChange = (e) => {
+        const value = e.target.value;
+        if (value === '' || /^\d+$/.test(value)) {
+            setUserId(value);
+        }
+    };
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -92,6 +120,33 @@ const Login = () => {
 		}
 	};
 
+	const handleIdLogin = async (e) => {
+		e.preventDefault();
+		setError('');
+		setLoading(true);
+
+		try {
+			if (!userId) {
+				throw new Error('Por favor ingresa un ID de usuario');
+			}
+
+			const userIdNum = parseInt(userId);
+			if (isNaN(userIdNum) || userIdNum < 1 || userIdNum > maxUserId) {
+				throw new Error(`Por favor ingresa un ID válido (entre 1 y ${maxUserId})`);
+			}
+
+			// Store user ID in localStorage to mark as logged in
+			localStorage.setItem('movieAppUserId', userId);
+
+			// Navigate to home page
+			navigate('/');
+		} catch (err) {
+			setError(err.message);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const toggleMode = () => {
 		setIsLogin(!isLogin);
 		setError('');
@@ -108,63 +163,111 @@ const Login = () => {
 				<Heading level={2} className='heading-1 text-center'>
 					{isLogin ? 'Bienvenido' : 'Regístrate'}
 				</Heading>
-				<Paragraph className="heading-context text-center">
-					Por favor ingresa tus datos a continuación
-				</Paragraph>
+
+                <div className="login-tabs">
+                    <Button
+                        className={`tab-button ${loginType === 'id' ? 'active' : ''}`}
+                        onClick={() => setLoginType('id')}
+                    >
+                        Inicio por ID
+                    </Button>
+                    <Button
+                        className={`tab-button ${loginType === 'user' ? 'active' : ''}`}
+                        onClick={() => setLoginType('user')}
+                    >
+                        Inicio con Usuario
+                    </Button>
+                </div>
 
 				{error && <Paragraph className="error">{error}</Paragraph>}
 
-				<form onSubmit={handleSubmit}>
-					{!isLogin && (
-						<Input
-							type="text"
-							placeholder="Nombre"
-							name="name"
-							label="Nombre Completo"
-							value={formData.name}
-							onChange={handleChange}
-							disabled={loading}
-						/>
-					)}
+				{loginType === 'id' && (
+					<>
+						<Paragraph className="heading-context text-center">
+							Por favor ingresa tus datos a continuación
+						</Paragraph>
 
-					<Input
-						type="text"
-						placeholder="Usuario"
-						name="username"
-						label="Nombre de Usuario"
-						value={formData.username}
-						onChange={handleChange}
-						disabled={loading}
-					/>
+	                    <form onSubmit={handleIdLogin}>
+	                        <Input
+	                            type="text"
+	                            placeholder={`Ej: ${Math.floor(Math.random() * (maxUserId || 100)) + 1}`}
+	                            name="userId"
+	                            label={`ID de Usuario`}
+	                            value={userId}
+	                            onChange={handleIdChange}
+	                            disabled={loading}
+	                        />
 
-					<Input
-						type="password"
-						placeholder="Contraseña"
-						name="password"
-						label="Contraseña"
-						value={formData.password}
-						onChange={handleChange}
-						disabled={loading}
-					/>
+	                        <Button
+	                            type="submit"
+	                            className="submit-button"
+	                            disabled={loading}
+	                        >
+	                            {loading ? 'Verificando...' : 'Iniciar con ID'}
+	                        </Button>
+	                    </form>
+					</>
+                )}
 
-					<Button
-						type="submit"
-						className="submit-button"
-						disabled={loading}
-					>
-						{loading
-							? 'Procesando...'
-							: (isLogin ? 'Iniciar Sesión' : 'Registrarse')
-						}
-					</Button>
-				</form>
+				{loginType === 'user' && (
+                    <>
+						<Paragraph className="heading-context text-center">
+							Por favor ingresa tus datos a continuación
+						</Paragraph>
 
-				<Paragraph className="toggle-form text-center">
-					{isLogin ? "¿No tienes una cuenta? " : "¿Ya tienes una cuenta? "}
-					<span onClick={!loading ? toggleMode : undefined} className={`toggle-link ${loading ? 'disabled' : ''}`}>
-						{isLogin ? 'Regístrate aquí' : 'Inicia sesión aquí'}
-					</span>
-				</Paragraph>
+						<form onSubmit={handleSubmit}>
+							{!isLogin && (
+								<Input
+									type="text"
+									placeholder="Nombre"
+									name="name"
+									label="Nombre Completo"
+									value={formData.name}
+									onChange={handleChange}
+									disabled={loading}
+								/>
+							)}
+
+							<Input
+								type="text"
+								placeholder="Usuario"
+								name="username"
+								label="Nombre de Usuario"
+								value={formData.username}
+								onChange={handleChange}
+								disabled={loading}
+							/>
+
+							<Input
+								type="password"
+								placeholder="Contraseña"
+								name="password"
+								label="Contraseña"
+								value={formData.password}
+								onChange={handleChange}
+								disabled={loading}
+							/>
+
+							<Button
+								type="submit"
+								className="submit-button"
+								disabled={loading}
+							>
+								{loading
+									? 'Procesando...'
+									: (isLogin ? 'Iniciar Sesión' : 'Registrarse')
+								}
+							</Button>
+						</form>
+
+						<Paragraph className="toggle-form text-center">
+							{isLogin ? "¿No tienes una cuenta? " : "¿Ya tienes una cuenta? "}
+							<span onClick={!loading ? toggleMode : undefined} className={`toggle-link ${loading ? 'disabled' : ''}`}>
+								{isLogin ? 'Regístrate aquí' : 'Inicia sesión aquí'}
+							</span>
+						</Paragraph>
+                    </>
+                )}
 			</div>
 		</div>
 	);

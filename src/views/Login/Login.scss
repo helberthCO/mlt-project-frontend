@@ -47,4 +47,25 @@
 			}
 		}
 	}
+
+	.login-tabs {
+		display: flex;
+		margin: $space-4 0 $space-8;
+		gap: $space-4;
+
+		.tab-button {
+			flex: 1;
+			padding: $space-2;
+			border: 1px solid $text-color;
+			background-color: $white-color;
+			color: $text-color;
+			cursor: pointer;
+
+			&.active, &:hover {
+				color: $white-color;
+				background-color: $text-color;
+				border-color: $text-color;
+			}
+		}
+	}
 }

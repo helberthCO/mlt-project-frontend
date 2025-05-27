@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Slider from 'react-slick';
 import ColorThief from 'colorthief';
-import moviesData from '../../data/movies.json';
 import Heading from '../../components/Heading/Heading';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -15,6 +14,17 @@ const MoviePosters = () => {
 	const initialLogged = useRef(false);
 	const [mainColors, setMainColors] = useState(['rgb(38,70,83)', 'rgb(42,157,143)']);
 	const colorThief = useRef(new ColorThief());
+
+	const cleanMovieTitle = (title) => {
+		let cleanTitle = title.replace(/\s*\(\d{4}\)$/, '');
+		cleanTitle = cleanTitle.replace(/\s*\(a\.k\.a\.\s+[^)]+\)/i, '');
+		const articleRegex = /^(.+),\s+(The|A|An)$/;
+		const match = cleanTitle.match(articleRegex);
+		if (match) {
+			cleanTitle = `${match[2]} ${match[1]}`;
+		}
+		return cleanTitle;
+	};
 
 	const getMainColorsFromImage = (imageUrl) => {
 		return new Promise((resolve, reject) => {
@@ -68,41 +78,114 @@ const MoviePosters = () => {
 	}, [loading, movies]);
 
 	useEffect(() => {
-		const fetchMoviePosters = async () => {
+		const fetchRecommendations = async () => {
 			try {
+				setLoading(true);
+
+				// Check for user authentication type
+				const userId = localStorage.getItem('movieAppUserId');
+				let requestBody;
+
+				if (userId) {
+					// ID-authenticated user - send empty object instead of null
+					requestBody = {
+						user_id: userId,
+						ratings: {} // Changed from null to empty object
+					};
+					console.log("Fetching recommendations for ID-based user:", userId);
+				} else {
+					// Password-authenticated user - use localStorage ratings
+					const storedRatings = JSON.parse(localStorage.getItem('movieRatings') || '{}');
+
+					if (Object.keys(storedRatings).length === 0) {
+						console.warn("No ratings found in localStorage");
+						setLoading(false);
+						return;
+					}
+
+					// Create a simplified format that API expects
+					const formattedRatings = {};
+					Object.entries(storedRatings).forEach(([movieId, data]) => {
+						// Extract just the rating value from the stored object
+						formattedRatings[movieId] = data.rating;
+					});
+
+					requestBody = {
+						user_id: "anonymous",
+						ratings: formattedRatings
+					};
+					console.log("Fetching recommendations for password user with local ratings");
+				}
+
+				// Send request to backend
+				const response = await fetch('http://localhost:8000/api/recommendations', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(requestBody)
+				});
+
+				if (!response.ok) {
+					throw new Error(`API responded with status: ${response.status}`);
+				}
+
+				const data = await response.json();
+				const recommendedMovies = data.recommendations || [];
+
+				// Enhance recommendations with TMDB data
 				const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 				const updatedMovies = await Promise.all(
-					moviesData.map(async (movie) => {
-						const response = await fetch(
-							`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(movie.title)}&page=1`
-						);
-						const data = await response.json();
-						const movieDetails = data.results[0] || {};
+					recommendedMovies.map(async (movie) => {
+						try {
+							const cleanTitle = cleanMovieTitle(movie.title);
 
-						return {
-							...movie,
-							id: movieDetails.id || Math.random(),
-							poster_path: movieDetails.poster_path || null,
-							backdrop_path: movieDetails.backdrop_path || null,
-							overview: movieDetails.overview || 'No overview available'
-						};
+							const response = await fetch(
+								`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(cleanTitle)}&page=1`
+							);
+							const data = await response.json();
+							const movieDetails = data.results[0] || {};
+
+							return {
+								...movie,
+								title: cleanTitle,
+								originalTitle: movie.title,
+								id: movieDetails.id || movie.movieId,
+								poster_path: movieDetails.poster_path || null,
+								backdrop_path: movieDetails.backdrop_path || null,
+								overview: movieDetails.overview || 'No overview available',
+								predicted_rating: movie.predicted_rating || movie.score || 0
+							};
+						} catch (error) {
+							console.error(`Error fetching details for movie ${movie.title}:`, error);
+							return {
+								...movie,
+								title: cleanMovieTitle(movie.title),
+								id: movie.movieId,
+								poster_path: null,
+								backdrop_path: null,
+								overview: 'No overview available',
+								predicted_rating: movie.predicted_rating || movie.score || 0
+							};
+						}
 					})
 				);
+
 				setMovies(updatedMovies);
 			} catch (error) {
-				console.error('Error fetching movie posters:', error);
+				console.error('Error fetching recommendations:', error);
 			} finally {
 				setLoading(false);
 			}
 		};
 
-		fetchMoviePosters();
+		fetchRecommendations();
 	}, []);
 
 	const sliderSettings = {
 		dots: false,
 		arrows: true,
-		infinite: true,
+		infinite: false,
 		slidesToShow: 3,
 		slidesToScroll: 1,
 		autoplay: false,
@@ -178,6 +261,14 @@ const MoviePosters = () => {
 						<p className="movie-overview">
 							{currentMovie ? currentMovie.overview : ''}
 						</p>
+						<div className="movie-rating">
+							{currentMovie?.actual_rating && (
+								<p>Calificacion Actual: <span className="rating-value actual">{(currentMovie.actual_rating / 2).toFixed(1)}</span></p>
+							)}
+							{currentMovie?.actual_rating && (
+								<p>Calificacion Predicha: <span className="rating-value predicted">{currentMovie?.predicted_rating?.toFixed(1)}</span></p>
+							)}
+						</div>
 					</div>
 				</div>
 			)}

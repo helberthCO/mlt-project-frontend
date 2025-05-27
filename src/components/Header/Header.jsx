@@ -9,7 +9,10 @@ import './Header.scss';
 
 const Header = () => {
 	const navigate = useNavigate();
-	const [userData, setUserData] = useState({ name: 'Usuario' });
+	const [userData, setUserData] = useState(() => {
+		const userId = localStorage.getItem('movieAppUserId');
+		return { name: userId ? `Usuario ${userId}` : 'Usuario' };
+	});
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -42,6 +45,7 @@ const Header = () => {
 			await signOut(auth);
 			sessionStorage.removeItem('authToken');
 			sessionStorage.removeItem('userData');
+			localStorage.removeItem('movieAppUserId');
 			navigate('/login');
 		} catch (error) {
 			console.error('Logout error:', error);
