@@ -1,4 +1,4 @@
-// src/services/firebase.service.js
+// src/services/firebase.movielensService.service.js
 import { initializeApp } from 'firebase/app';
 import {
 	getAuth,
