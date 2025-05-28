@@ -137,6 +137,8 @@ const MoviePosters = () => {
 				const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 				const updatedMovies = await Promise.all(
 					recommendedMovies.map(async (movie) => {
+						const predictedRating = (movie.predicted_rating * 100) / 20;
+						
 						try {
 							const cleanTitle = cleanMovieTitle(movie.title);
 
@@ -154,7 +156,7 @@ const MoviePosters = () => {
 								poster_path: movieDetails.poster_path || null,
 								backdrop_path: movieDetails.backdrop_path || null,
 								overview: movieDetails.overview || 'No overview available',
-								predicted_rating: movie.predicted_rating || movie.score || 0
+								predicted_rating: predictedRating
 							};
 						} catch (error) {
 							console.error(`Error fetching details for movie ${movie.title}:`, error);
@@ -165,7 +167,7 @@ const MoviePosters = () => {
 								poster_path: null,
 								backdrop_path: null,
 								overview: 'No overview available',
-								predicted_rating: movie.predicted_rating || movie.score || 0
+								predicted_rating: predictedRating
 							};
 						}
 					})
@@ -185,7 +187,7 @@ const MoviePosters = () => {
 	const sliderSettings = {
 		dots: false,
 		arrows: true,
-		infinite: false,
+		infinite: true,
 		slidesToShow: 3,
 		slidesToScroll: 1,
 		autoplay: false,
@@ -265,7 +267,7 @@ const MoviePosters = () => {
 							{currentMovie?.actual_rating && (
 								<p>Calificacion Actual: <span className="rating-value actual">{(currentMovie.actual_rating / 2).toFixed(1)}</span></p>
 							)}
-							{currentMovie?.actual_rating && (
+							{currentMovie?.predicted_rating && (
 								<p>Calificacion Predicha: <span className="rating-value predicted">{currentMovie?.predicted_rating?.toFixed(1)}</span></p>
 							)}
 						</div>
